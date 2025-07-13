@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@payload-config": ["./src/payload.config.js"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/collections/Users/index.js",
+    "src/app/(payload)/layout.jsx",
+    "src/app/(payload)/c-admin/[[...segments]]/page.jsx",
+    "src/app/(payload)/c-admin/[[...segments]]/not-found.jsx",
+    "src/app/(payload)/api/[...slug]/route.js",
+    "src/payload.config.js"
+  ],
+  "exclude": ["node_modules"]
+}
