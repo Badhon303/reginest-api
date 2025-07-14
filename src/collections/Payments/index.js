@@ -24,13 +24,24 @@ export const Payments = {
     {
       name: 'transactionId',
       type: 'text',
-      maxLength: 99, // regex may required
+      maxLength: 99,
       required: true,
+      unique: true,
     },
     {
       name: 'amount',
       type: 'number',
       required: true,
+    },
+    {
+      name: 'currency',
+      type: 'select',
+      required: true,
+      options: [
+        { label: 'BDT', value: 'bdt' },
+        { label: 'USD', value: 'usd' },
+      ],
+      defaultValue: 'bdt',
     },
     {
       name: 'status',
@@ -52,7 +63,6 @@ export const Payments = {
         { label: 'Bkash', value: 'bkash' },
         { label: 'Nagad', value: 'nagad' },
       ],
-      defaultValue: 'credit-card',
     },
     {
       name: 'attendee',
@@ -60,6 +70,34 @@ export const Payments = {
       relationTo: 'attendees',
       required: true,
       hasMany: false,
+    },
+    {
+      name: 'productName',
+      type: 'text',
+      maxLength: 99,
+      defaultValue: 'Reginest Registration',
+    },
+    {
+      name: 'productCategory',
+      type: 'text',
+      maxLength: 99,
+      defaultValue: 'Registration Fee',
+    },
+    {
+      name: 'productProfile',
+      type: 'text',
+      maxLength: 99,
+      defaultValue: 'General',
+    },
+    {
+      name: 'customerInfo', // required
+      type: 'json', // required
+    },
+    {
+      name: 'registrationDate',
+      type: 'date',
+      defaultValue: () => new Date(),
+      access: { update: () => false, create: () => false },
     },
   ],
 }

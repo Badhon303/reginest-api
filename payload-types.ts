@@ -183,9 +183,23 @@ export interface Payment {
   id: string;
   transactionId: string;
   amount: number;
+  currency: 'bdt' | 'usd';
   status: 'pending' | 'completed' | 'failed';
   paymentMethod: 'credit-card' | 'bkash' | 'nagad';
   attendee: string | Attendee;
+  productName?: string | null;
+  productCategory?: string | null;
+  productProfile?: string | null;
+  customerInfo?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  registrationDate?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -306,9 +320,15 @@ export interface AttendeesSelect<T extends boolean = true> {
 export interface PaymentsSelect<T extends boolean = true> {
   transactionId?: T;
   amount?: T;
+  currency?: T;
   status?: T;
   paymentMethod?: T;
   attendee?: T;
+  productName?: T;
+  productCategory?: T;
+  productProfile?: T;
+  customerInfo?: T;
+  registrationDate?: T;
   updatedAt?: T;
   createdAt?: T;
 }
