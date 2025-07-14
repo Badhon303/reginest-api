@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
+import { Payments } from './collections/Payments'
+import { Attendees } from './collections/Attendees'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -38,10 +40,7 @@ export default buildConfig({
       titleSuffix: '- Reginest Admin',
     },
   },
-  // routes: {
-  //   admin: '/r-admin',
-  // },
-  collections: [Users],
+  collections: [Users, Attendees, Payments],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   graphQL: {

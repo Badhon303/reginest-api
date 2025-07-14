@@ -68,13 +68,21 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    attendees: Attendee;
+    payments: Payment;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    attendees: {
+      paymentId: 'payments';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    attendees: AttendeesSelect<false> | AttendeesSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -117,6 +125,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  role: 'super-admin' | 'admin';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -137,14 +146,68 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attendees".
+ */
+export interface Attendee {
+  id: string;
+  prefix: 'mr' | 'mrs' | 'miss';
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  Guests?:
+    | {
+        prefix: 'mr' | 'mrs' | 'miss';
+        firstName: string;
+        lastName: string;
+        email: string;
+        contactNumber: string;
+        id?: string | null;
+      }[]
+    | null;
+  entryPassQuantity?: number | null;
+  paymentId?: {
+    docs?: (string | Payment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  registrationDate?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: string;
+  transactionId: string;
+  amount: number;
+  status: 'pending' | 'completed' | 'failed';
+  paymentMethod: 'credit-card' | 'bkash' | 'nagad';
+  attendee?: (string | null) | Attendee;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
   id: string;
-  document?: {
-    relationTo: 'users';
-    value: string | User;
-  } | null;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
+        relationTo: 'attendees';
+        value: string | Attendee;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: string | Payment;
+      } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -192,6 +255,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -208,6 +272,45 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attendees_select".
+ */
+export interface AttendeesSelect<T extends boolean = true> {
+  prefix?: T;
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  contactNumber?: T;
+  Guests?:
+    | T
+    | {
+        prefix?: T;
+        firstName?: T;
+        lastName?: T;
+        email?: T;
+        contactNumber?: T;
+        id?: T;
+      };
+  entryPassQuantity?: T;
+  paymentId?: T;
+  registrationDate?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  transactionId?: T;
+  amount?: T;
+  status?: T;
+  paymentMethod?: T;
+  attendee?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
