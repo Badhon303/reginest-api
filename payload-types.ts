@@ -185,7 +185,7 @@ export interface Payment {
   amount: number;
   status: 'pending' | 'completed' | 'failed';
   paymentMethod: 'credit-card' | 'bkash' | 'nagad';
-  attendee?: (string | null) | Attendee;
+  attendee: string | Attendee;
   updatedAt: string;
   createdAt: string;
 }

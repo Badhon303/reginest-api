@@ -15,7 +15,7 @@ export const Attendees = {
       return false
     },
     create: SuperAdmins,
-    update: () => false,
+    update: () => SuperAdmins,
     delete: SuperAdmins,
   },
   fields: [
@@ -257,6 +257,7 @@ export const Attendees = {
     {
       name: 'entryPassQuantity',
       type: 'number',
+      access: { update: () => false, create: () => false },
     },
     {
       name: 'paymentId',

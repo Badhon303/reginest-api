@@ -15,7 +15,7 @@ export const Payments = {
       return false
     },
     create: SuperAdmins,
-    update: () => false,
+    update: () => SuperAdmins,
     delete: SuperAdmins,
   },
   fields: [
@@ -58,6 +58,8 @@ export const Payments = {
       name: 'attendee',
       type: 'relationship',
       relationTo: 'attendees',
+      required: true,
+      hasMany: false,
     },
   ],
 }
