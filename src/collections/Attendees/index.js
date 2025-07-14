@@ -15,7 +15,7 @@ export const Attendees = {
       return false
     },
     create: SuperAdmins,
-    update: () => SuperAdmins,
+    update: SuperAdmins,
     delete: SuperAdmins,
   },
   fields: [
@@ -137,7 +137,7 @@ export const Attendees = {
     {
       name: 'Guests',
       type: 'array',
-      maxRows: 99,
+      maxRows: 10,
       fields: [
         {
           name: 'prefix',
@@ -257,6 +257,7 @@ export const Attendees = {
     {
       name: 'entryPassQuantity',
       type: 'number',
+      max: 11,
       access: { update: () => false, create: () => false },
     },
     {

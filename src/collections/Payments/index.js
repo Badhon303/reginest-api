@@ -15,7 +15,7 @@ export const Payments = {
       return false
     },
     create: SuperAdmins,
-    update: () => SuperAdmins,
+    update: SuperAdmins,
     delete: SuperAdmins,
   },
   fields: [
@@ -31,6 +31,7 @@ export const Payments = {
     {
       name: 'amount',
       type: 'number',
+      max: 999999999,
       required: true,
     },
     {
