@@ -78,7 +78,6 @@ export const POST = async (request) => {
       return NextResponse.json(
         {
           message: 'Payment successful.',
-          transactionId: trans_id,
         },
         { status: 200 },
       )
