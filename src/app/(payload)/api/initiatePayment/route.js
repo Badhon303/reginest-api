@@ -65,7 +65,7 @@ export const POST = async (request) => {
     const data = dataConfig({
       total_amount: productData.price * (attendee?.guests?.length + 1),
       tran_id: transaction_id,
-      success_url: `${process.env.FRONTEND_URL}/payment/success?tran_id=${transaction_id}`,
+      success_url: `${process.env.BACKEND_URL}/api/paymentStatus?tran_id=${transaction_id}`,
       fail_url: `${process.env.FRONTEND_URL}/payment/fail`,
       cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
       product_name: productData?.productName || 'Reginest Registration',

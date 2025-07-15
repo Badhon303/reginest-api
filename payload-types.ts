@@ -190,15 +190,6 @@ export interface Payment {
   attendee: string | Attendee;
   productName?: string | null;
   productCategory?: string | null;
-  customerInfo?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
   registrationDate?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -341,7 +332,6 @@ export interface PaymentsSelect<T extends boolean = true> {
   attendee?: T;
   productName?: T;
   productCategory?: T;
-  customerInfo?: T;
   registrationDate?: T;
   updatedAt?: T;
   createdAt?: T;

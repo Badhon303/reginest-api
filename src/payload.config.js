@@ -72,8 +72,18 @@ export default buildConfig({
       },
     },
   }),
-  cors: ['http://localhost:3000', 'https://3gvsd2l4-3000.asse.devtunnels.ms'],
+  cors: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://reginest-web.vercel.app',
+    'https://3gvsd2l4-3000.asse.devtunnels.ms',
+  ],
   // If you are protecting resources behind user authentication,
   // This will allow cookies to be sent between the two domains
-  csrf: ['http://localhost:3000', 'https://3gvsd2l4-3000.asse.devtunnels.ms'],
+  csrf: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://reginest-web.vercel.app',
+    'https://3gvsd2l4-3000.asse.devtunnels.ms',
+  ],
 })

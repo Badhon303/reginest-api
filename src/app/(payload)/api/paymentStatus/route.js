@@ -3,10 +3,9 @@ import { getPayload } from 'payload'
 import { NextResponse } from 'next/server'
 
 export const POST = async (request) => {
+  const url = new URL(request.url)
+  const trans_id = url.searchParams.get('tran_id')
   try {
-    const requestBody = await request.json()
-    const trans_id = requestBody.trans_id
-
     // Validate transaction_id
     if (!trans_id) {
       return NextResponse.json(
@@ -58,12 +57,9 @@ export const POST = async (request) => {
       }
 
       if (existingPayment.docs[0].status === 'completed') {
-        return NextResponse.json(
-          {
-            message: 'Payment already completed.',
-          },
-          { status: 200 },
-        )
+        return NextResponse.redirect(`https://reginest-web.vercel.app/payment/success`, {
+          status: 303,
+        })
       }
 
       await payload.update({
@@ -71,16 +67,12 @@ export const POST = async (request) => {
         id: existingPayment.docs[0].id, // required
         data: {
           status: 'completed',
-          customerInfo: requestBody?.customer_info || {},
         },
       })
 
-      return NextResponse.json(
-        {
-          message: 'Payment successful.',
-        },
-        { status: 200 },
-      )
+      return NextResponse.redirect(`https://reginest-web.vercel.app/payment/success`, {
+        status: 303,
+      })
     } catch (error) {
       console.error('Error updating payment in Payload: ', error)
       return NextResponse.json(

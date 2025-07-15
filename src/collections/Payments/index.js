@@ -4,7 +4,7 @@ export const Payments = {
   slug: 'payments',
   admin: {
     useAsTitle: 'transactionId',
-    defaultColumns: ['transactionId', 'amount', 'attendee', 'entryPassQuantity', 'status'],
+    defaultColumns: ['attendee', 'transactionId', 'amount', 'entryPassQuantity', 'status'],
   },
   access: {
     read: ({ req: { user } }) => {
@@ -90,10 +90,6 @@ export const Payments = {
       type: 'text',
       maxLength: 99,
       defaultValue: 'Registration Fee',
-    },
-    {
-      name: 'customerInfo', // required
-      type: 'json', // required
     },
     {
       name: 'registrationDate',
