@@ -123,8 +123,13 @@ export const POST = async (request) => {
           { status: 500 },
         )
       }
-      console.log('result.GatewayPageURL: ', result.GatewayPageURL)
-      return NextResponse.redirect(result.GatewayPageURL)
+      return NextResponse.json(
+        {
+          message: 'Payment initiated successfully.',
+          url: result.GatewayPageURL,
+        },
+        { status: 200 },
+      )
     }
   } catch (error) {
     console.error('Unexpected error in POST handler: ', error)
