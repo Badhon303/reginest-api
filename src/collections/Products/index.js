@@ -40,11 +40,5 @@ export const Products = {
       maxLength: 99,
       defaultValue: 'Registration Fee',
     },
-    {
-      name: 'productProfile',
-      type: 'text',
-      maxLength: 99,
-      defaultValue: 'General',
-    },
   ],
 }

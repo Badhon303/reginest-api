@@ -6,6 +6,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import { Users } from './collections/Users'
 import { Payments } from './collections/Payments'
@@ -58,8 +59,21 @@ export default buildConfig({
     payloadCloudPlugin(),
     // storage-adapter-placeholder
   ],
-  cors: ['http://localhost:3000'],
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.SMTP_USER,
+    defaultFromName: process.env.FROM_NAME,
+    // Nodemailer transportOptions
+    transportOptions: {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    },
+  }),
+  cors: ['http://localhost:3000', 'https://3gvsd2l4-3000.asse.devtunnels.ms'],
   // If you are protecting resources behind user authentication,
   // This will allow cookies to be sent between the two domains
-  csrf: ['http://localhost:3000'],
+  csrf: ['http://localhost:3000', 'https://3gvsd2l4-3000.asse.devtunnels.ms'],
 })

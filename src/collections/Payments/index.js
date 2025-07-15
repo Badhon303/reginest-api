@@ -35,6 +35,12 @@ export const Payments = {
       required: true,
     },
     {
+      name: 'entryPassQuantity',
+      type: 'number',
+      max: 11,
+      required: true,
+    },
+    {
       name: 'currency',
       type: 'select',
       required: true,
@@ -55,16 +61,16 @@ export const Payments = {
       ],
       defaultValue: 'failed',
     },
-    {
-      name: 'paymentMethod',
-      type: 'select',
-      required: true,
-      options: [
-        { label: 'Credit Card', value: 'credit-card' },
-        { label: 'Bkash', value: 'bkash' },
-        { label: 'Nagad', value: 'nagad' },
-      ],
-    },
+    // {
+    //   name: 'paymentMethod',
+    //   type: 'select',
+    //   required: true,
+    //   options: [
+    //     { label: 'Credit Card', value: 'credit-card' },
+    //     { label: 'Bkash', value: 'bkash' },
+    //     { label: 'Nagad', value: 'nagad' },
+    //   ],
+    // },
     {
       name: 'attendee',
       type: 'relationship',
@@ -85,12 +91,6 @@ export const Payments = {
       defaultValue: 'Registration Fee',
     },
     {
-      name: 'productProfile',
-      type: 'text',
-      maxLength: 99,
-      defaultValue: 'General',
-    },
-    {
       name: 'customerInfo', // required
       type: 'json', // required
     },
@@ -101,4 +101,44 @@ export const Payments = {
       access: { update: () => false, create: () => false },
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc, req, operation }) => {
+        // 'doc' is the document after the change
+        // 'req' is the express request
+        // 'operation' indicates 'create' or 'update'
+
+        // Only send email if the payment status is 'completed' and it was an 'update' operation
+        if (operation === 'update' && doc.status === 'completed') {
+          try {
+            const attendee = await req.payload.findByID({
+              collection: 'attendees',
+              id: doc.attendee.id,
+            })
+
+            if (attendee.email) {
+              await req.payload.sendEmail({
+                to: attendee.email,
+                subject: `Payment Successful! - Transaction ID: ${doc.transactionId}`,
+                html: `
+                  <p>Dear Customer,</p>
+                  <p>Your payment with Transaction ID: <strong>${doc.transactionId}</strong> has been successfully processed.</p>
+                  <p>You have paid <strong>${doc.amount}</strong>!</p>
+                  <p>Thank you for your purchase!</p>
+                  <p>Regards,<br/>RegiNest</p>
+                `,
+              })
+              console.log(`Email sent successfully for transaction ID: ${doc.transactionId}`)
+            }
+          } catch (emailError) {
+            console.error(
+              `Failed to send payment confirmation email for transaction ID: ${doc.transactionId}`,
+              emailError,
+            )
+          }
+        }
+        return doc // Always return the document
+      },
+    ],
+  },
 }

@@ -4,6 +4,7 @@ export const Attendees = {
   slug: 'attendees',
   admin: {
     useAsTitle: 'email',
+    // defaultColumns: ['firstName', 'lastName', 'email', 'contactNumber', 'registrationDate'],
   },
   access: {
     read: ({ req: { user } }) => {
@@ -14,7 +15,7 @@ export const Attendees = {
       }
       return false
     },
-    create: SuperAdmins,
+    create: () => true,
     update: SuperAdmins,
     delete: SuperAdmins,
   },
@@ -26,9 +27,9 @@ export const Attendees = {
       type: 'select',
       required: true,
       options: [
-        { label: 'Mr.', value: 'mr' },
-        { label: 'Mrs.', value: 'mrs' },
-        { label: 'Miss.', value: 'miss' },
+        { label: 'Mr.', value: 'Mr.' },
+        { label: 'Mrs.', value: 'Mrs.' },
+        { label: 'Miss.', value: 'Miss.' },
       ],
     },
     {
@@ -144,9 +145,9 @@ export const Attendees = {
           type: 'select',
           required: true,
           options: [
-            { label: 'Mr.', value: 'mr' },
-            { label: 'Mrs.', value: 'mrs' },
-            { label: 'Miss.', value: 'miss' },
+            { label: 'Mr.', value: 'Mr.' },
+            { label: 'Mrs.', value: 'Mrs.' },
+            { label: 'Miss.', value: 'Miss.' },
           ],
         },
         {
@@ -253,12 +254,6 @@ export const Attendees = {
           },
         },
       ],
-    },
-    {
-      name: 'entryPassQuantity',
-      type: 'number',
-      max: 11,
-      access: { update: () => false, create: () => false },
     },
     {
       name: 'paymentId',
