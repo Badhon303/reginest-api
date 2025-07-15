@@ -57,7 +57,7 @@ export const POST = async (request) => {
       }
 
       if (existingPayment.docs[0].status === 'completed') {
-        return NextResponse.redirect(`https://reginest-web.vercel.app/payment/success`, {
+        return NextResponse.redirect(`${process.env.FRONTEND_URL}/payment/success`, {
           status: 303,
         })
       }
@@ -70,7 +70,7 @@ export const POST = async (request) => {
         },
       })
 
-      return NextResponse.redirect(`https://reginest-web.vercel.app/payment/success`, {
+      return NextResponse.redirect(`${process.env.FRONTEND_URL}/payment/success`, {
         status: 303,
       })
     } catch (error) {
