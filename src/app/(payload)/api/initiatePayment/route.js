@@ -63,7 +63,7 @@ export const POST = async (request) => {
     }
 
     const data = dataConfig({
-      total_amount: productData.price * (attendee.Guests.length + 1),
+      total_amount: productData.price * (attendee?.guests?.length + 1),
       tran_id: transaction_id,
       success_url: `${process.env.FRONTEND_URL}/payment/success?tran_id=${transaction_id}`,
       fail_url: `${process.env.FRONTEND_URL}/payment/fail`,
@@ -95,8 +95,8 @@ export const POST = async (request) => {
     } else if (result.status === 'SUCCESS') {
       const paymentData = {
         transactionId: transaction_id,
-        amount: productData.price * (attendee.Guests.length + 1),
-        entryPassQuantity: attendee.Guests.length + 1,
+        amount: productData.price * (attendee?.guests?.length + 1),
+        entryPassQuantity: attendee?.guests?.length + 1,
         status: 'pending', // Set to pending initially, will be updated to 'paid' on success route
         attendee: requestBody.attendeeId,
         productName: productData?.productName || 'Reginest Registration',

@@ -4,6 +4,7 @@ export const Payments = {
   slug: 'payments',
   admin: {
     useAsTitle: 'transactionId',
+    defaultColumns: ['transactionId', 'amount', 'attendee', 'entryPassQuantity', 'status'],
   },
   access: {
     read: ({ req: { user } }) => {

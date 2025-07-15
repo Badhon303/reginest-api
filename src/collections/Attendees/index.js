@@ -4,7 +4,7 @@ export const Attendees = {
   slug: 'attendees',
   admin: {
     useAsTitle: 'email',
-    // defaultColumns: ['firstName', 'lastName', 'email', 'contactNumber', 'registrationDate'],
+    defaultColumns: ['email', 'contactNumber', 'paymentId', 'guests'],
   },
   access: {
     read: ({ req: { user } }) => {
@@ -89,6 +89,7 @@ export const Attendees = {
       type: 'text',
       maxLength: 99,
       required: true,
+      unique: true,
       validate: (value) => {
         if (!value) {
           return 'Email is required.'
@@ -136,7 +137,7 @@ export const Attendees = {
       },
     },
     {
-      name: 'Guests',
+      name: 'guests',
       type: 'array',
       maxRows: 10,
       fields: [

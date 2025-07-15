@@ -157,7 +157,7 @@ export interface Attendee {
   lastName: string;
   email: string;
   contactNumber: string;
-  Guests?:
+  guests?:
     | {
         prefix: 'Mr.' | 'Mrs.' | 'Miss.';
         firstName: string;
@@ -313,7 +313,7 @@ export interface AttendeesSelect<T extends boolean = true> {
   lastName?: T;
   email?: T;
   contactNumber?: T;
-  Guests?:
+  guests?:
     | T
     | {
         prefix?: T;
