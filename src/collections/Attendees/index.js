@@ -1,4 +1,5 @@
 import { SuperAdmins } from '@/utils/access/SuperAdmins'
+import { dataConfig, sslConfig } from '../../utils/sslConfig'
 
 export const Attendees = {
   slug: 'attendees',
@@ -316,4 +317,118 @@ export const Attendees = {
       },
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc, req, operation }) => {
+        // This hook runs after create and update operations
+        if (operation === 'create') {
+          const attendeeId = doc.id
+
+          try {
+            const transaction_id = `REG-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
+
+            // Fetch product data
+            const productDataRaw = await req.payload.find({
+              collection: 'products',
+              where: {
+                productName: {
+                  equals: 'Reginest Registration',
+                },
+              },
+            })
+            const productData = productDataRaw?.docs?.[0]
+
+            if (!productData) {
+              console.error('Product "Reginest Registration" not found. Cannot initiate payment.')
+              // You might want to throw an error or handle this more gracefully
+              // e.g., update attendee status to 'payment_failed'
+              return {
+                ...doc,
+                error: 'Product "Reginest Registration" not found. Cannot initiate payment.',
+              } // Return the document as is, indicating failure to initiate payment
+            }
+
+            const data = dataConfig({
+              total_amount: productData.price * ((doc?.guests?.length || 0) + 1),
+              tran_id: transaction_id,
+              success_url: `${process.env.BACKEND_URL}/api/payment/success?tran_id=${transaction_id}`,
+              fail_url: `${process.env.BACKEND_URL}/api/payment/fail`,
+              cancel_url: `${process.env.BACKEND_URL}/api/payment/cancel`,
+              product_name: productData?.productName || 'Reginest Registration',
+              product_category: productData?.productCategory || 'General',
+              cus_name: doc.firstName + ' ' + doc.lastName,
+              cus_email: doc.email,
+              cus_phone: doc.contactNumber,
+            })
+
+            const result = await sslConfig.init(data)
+
+            if (!result.GatewayPageURL || result.status === 'FAILED') {
+              console.error(
+                'Failed to initialize payment for attendee:',
+                attendeeId,
+                'Reason:',
+                result.failedreason || 'Unknown reason',
+              )
+              return { ...doc, error: 'Failed to initialize payment.' } // Return the original document
+            } else if (result.status === 'SUCCESS') {
+              const paymentData = {
+                transactionId: transaction_id,
+                amount: productData.price * ((doc?.guests?.length || 0) + 1),
+                entryPassQuantity: (doc?.guests?.length || 0) + 1,
+                status: 'pending', // Set to pending initially, will be updated to 'paid' on success route
+                attendee: attendeeId, // Link the payment to the attendee
+                productName: productData?.productName || 'Reginest Registration',
+                productCategory: productData?.productCategory || 'General',
+              }
+
+              try {
+                const createdPayment = await req.payload.create({
+                  collection: 'payments',
+                  data: paymentData,
+                  req, // Pass the request object to maintain context if needed
+                })
+
+                // Update the attendee's paymentId field with the newly created payment record's ID
+                await req.payload.update({
+                  collection: 'attendees',
+                  id: attendeeId,
+                  data: {
+                    paymentId: createdPayment.id,
+                  },
+                  req, // Pass the request object
+                })
+
+                console.log(
+                  'Payment initiated and record created successfully for attendee:',
+                  attendeeId,
+                  'Transaction ID:',
+                  transaction_id,
+                  'Gateway URL:',
+                  result.GatewayPageURL,
+                )
+
+                // If you need to redirect the user immediately after creation,
+                // this hook won't directly do that for a server-side create operation
+                // (e.g., from the admin panel). For client-side redirects, you'd
+                // typically return the URL to the client.
+                // For a backend operation, you simply ensure the payment record is created.
+                return { ...doc, GatewayPageURL: result.GatewayPageURL }
+              } catch (error) {
+                console.error('Error creating payment record in Payload: ', error)
+                // Handle database error for payment creation
+                // You might want to update attendee status or log this error more specifically
+                return { ...doc, error: 'Error creating payment record.' } // Return the original document
+              }
+            }
+          } catch (error) {
+            console.error('Unexpected error in afterChange hook for Attendees:', error)
+            // Handle unexpected errors during the payment initiation process
+            return { ...doc, error: 'Unexpected error during payment initiation.' } // Return the original document
+          }
+        }
+        return doc // Always return the document
+      },
+    ],
+  },
 }

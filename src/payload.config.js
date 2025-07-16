@@ -77,6 +77,8 @@ export default buildConfig({
     'http://localhost:3001',
     'https://api.reginest.com',
     'https://reginest.com',
+    'https://3gvsd2l4-3000.asse.devtunnels.ms',
+    'https://reginest-web-gamma.vercel.app',
   ],
   // If you are protecting resources behind user authentication,
   // This will allow cookies to be sent between the two domains
@@ -85,5 +87,7 @@ export default buildConfig({
     'http://localhost:3001',
     'https://api.reginest.com',
     'https://reginest.com',
+    'https://3gvsd2l4-3000.asse.devtunnels.ms',
+    'https://reginest-web-gamma.vercel.app',
   ],
 })
