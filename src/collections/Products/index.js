@@ -39,6 +39,7 @@ export const Products = {
       type: 'text',
       maxLength: 99,
       defaultValue: 'Registration Fee',
+      access: { update: () => false },
     },
   ],
 }

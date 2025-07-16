@@ -249,7 +249,7 @@ export const Attendees = {
             if (phoneRegex.test(value) || bdMobileRegex.test(value)) {
               return true
             }
-            return 'Please enter a valid phone number (e.g., +123-456-7890, 01783558935)'
+            return 'Please enter a valid phone number (e.g., +8801783558935, 01783558935)'
           },
         },
       ],
