@@ -120,17 +120,15 @@ export const Attendees = {
       validate: (value) => {
         if (!value) return true // Allow empty phone number
 
-        // Updated regex for phone numbers:
-        // Allows for:
-        // - Optional '+' at the beginning
-        // - Digits (0-9)
-        // - Spaces, hyphens, and parentheses
-        // - Minimum 7 digits, maximum 15 (adjust as needed for your specific use case)
-        const phoneRegex = /^\+?[\d\s\-\(\)]{7,20}$/
-        // Example for Bangladeshi mobile numbers (starting with 01)
-        const bdMobileRegex = /^01[3-9]\d{8}$/
+        // Regex for Bangladeshi mobile numbers:
+        // - Optionally starts with '+88'
+        // - Must then start with '01'
+        // - The third digit must be between 3 and 9 (inclusive)
+        // - Followed by 8 more digits
+        // - Total length of 11 digits (excluding optional +88)
+        const bdMobileRegex = /^(?:\+88)?01[3-9]\d{8}$/
 
-        if (phoneRegex.test(value) || bdMobileRegex.test(value)) {
+        if (bdMobileRegex.test(value)) {
           return true
         }
         return 'Please enter a valid phone number (e.g., +123-456-7890, 01783558935)'
@@ -246,7 +244,7 @@ export const Attendees = {
             // - Total length of 11 digits (excluding optional +88)
             const bdMobileRegex = /^(?:\+88)?01[3-9]\d{8}$/
 
-            if (phoneRegex.test(value) || bdMobileRegex.test(value)) {
+            if (bdMobileRegex.test(value)) {
               return true
             }
             return 'Please enter a valid phone number (e.g., +8801783558935, 01783558935)'
