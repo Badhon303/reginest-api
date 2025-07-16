@@ -89,8 +89,9 @@ export const Attendees = {
       type: 'text',
       maxLength: 99,
       required: true,
-      unique: true,
-      validate: (value) => {
+      // unique: true, // You might remove or keep this depending on your exact requirements. The custom validation handles the uniqueness constraint.
+      validate: async (value, { req, siblingData }) => {
+        // Added `req` and `siblingData` for access to payload and current document
         if (!value) {
           return 'Email is required.'
         }
@@ -99,6 +100,34 @@ export const Attendees = {
         if (!emailRegex.test(value)) {
           return 'Please enter a valid email address.'
         }
+
+        // Convert value to lowercase for consistent checking
+        const lowerCaseValue = value.toLowerCase().trim()
+
+        try {
+          const { docs } = await req.payload.find({
+            collection: 'attendees', // The slug of your collection
+            where: {
+              email: {
+                equals: lowerCaseValue,
+              },
+            },
+            limit: 11, // Fetch up to 11 to efficiently check if more than 10 exist
+            depth: 0, // No need for deep relationships here
+          })
+
+          // Filter out the current document if it's an update operation
+          // This prevents the current document from being counted against itself
+          const existingRecords = docs.filter((doc) => doc.id !== siblingData?.id)
+
+          if (existingRecords.length >= 10) {
+            return 'More than 10 records with this email address are not allowed.'
+          }
+        } catch (error) {
+          console.error('Error during email validation:', error)
+          return 'An error occurred during email validation. Please try again.'
+        }
+
         return true
       },
       hooks: {

@@ -24,6 +24,7 @@ export const Products = {
       type: 'number',
       required: true,
       max: 999999999,
+      min: 10,
     },
     {
       name: 'productName',
