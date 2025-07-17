@@ -30,6 +30,11 @@ export const Products = {
       name: 'deadLine',
       type: 'date',
       required: true,
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime', // This enables both date and time selection
+        },
+      },
     },
     {
       name: 'productName',
