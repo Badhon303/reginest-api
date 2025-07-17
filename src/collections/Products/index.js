@@ -33,6 +33,7 @@ export const Products = {
       admin: {
         date: {
           pickerAppearance: 'dayAndTime', // This enables both date and time selection
+          displayFormat: 'dd-MM-yyyy HH:mm:ss',
         },
       },
     },
