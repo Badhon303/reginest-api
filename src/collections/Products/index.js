@@ -4,6 +4,7 @@ export const Products = {
   slug: 'products',
   admin: {
     useAsTitle: 'productName',
+    hideAPIURL: process.env.NODE_ENV !== 'development' ? true : false,
   },
   access: {
     read: () => true,

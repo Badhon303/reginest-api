@@ -5,6 +5,7 @@ export const Payments = {
   admin: {
     useAsTitle: 'transactionId',
     defaultColumns: ['attendee', 'transactionId', 'amount', 'entryPassQuantity', 'status'],
+    hideAPIURL: process.env.NODE_ENV !== 'development' ? true : false,
   },
   access: {
     read: ({ req: { user } }) => {

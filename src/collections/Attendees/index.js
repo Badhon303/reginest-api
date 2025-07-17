@@ -7,6 +7,7 @@ export const Attendees = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'contactNumber', 'paymentId', 'guests'],
+    hideAPIURL: process.env.NODE_ENV !== 'development' ? true : false,
   },
   access: {
     read: ({ req: { user } }) => {
