@@ -27,6 +27,11 @@ export const Products = {
       min: 10,
     },
     {
+      name: 'deadLine',
+      type: 'date',
+      required: true,
+    },
+    {
       name: 'productName',
       type: 'text',
       unique: true,
@@ -39,6 +44,7 @@ export const Products = {
       name: 'productCategory',
       type: 'text',
       maxLength: 99,
+      required: true,
       defaultValue: 'Registration Fee',
       access: { update: () => false },
     },

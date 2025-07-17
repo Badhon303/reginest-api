@@ -201,8 +201,9 @@ export interface Payment {
 export interface Product {
   id: string;
   price: number;
+  deadLine: string;
   productName: string;
-  productCategory?: string | null;
+  productCategory: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -342,6 +343,7 @@ export interface PaymentsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   price?: T;
+  deadLine?: T;
   productName?: T;
   productCategory?: T;
   updatedAt?: T;

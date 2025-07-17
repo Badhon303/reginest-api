@@ -1,5 +1,6 @@
 import { SuperAdmins } from '@/utils/access/SuperAdmins'
 import { dataConfig, sslConfig } from '../../utils/sslConfig'
+import { APIError } from 'payload'
 
 export const Attendees = {
   slug: 'attendees',
@@ -318,8 +319,47 @@ export const Attendees = {
     },
   ],
   hooks: {
+    beforeOperation: [
+      async ({ args, operation, req, context }) => {
+        if (operation === 'create') {
+          // Fetch product data
+          context.productDataRaw = await req.payload.find({
+            collection: 'products',
+            where: {
+              productName: {
+                equals: 'Reginest Registration',
+              },
+            },
+          })
+          const productData = context.productDataRaw?.docs?.[0]
+
+          if (!productData || !productData.price || !productData.deadLine) {
+            console.error('Product "Reginest Registration" not found. Cannot initiate payment.')
+            // You might want to throw an error or handle this more gracefully
+            // e.g., update attendee status to 'payment_failed'
+            throw new APIError(
+              'Product "Reginest Registration" not found. Cannot initiate payment.',
+              400,
+            )
+          }
+          const registrationCutoffDate = new Date(`${productData.deadLine}`) // August 20th, 2025, end of day UTC
+          const now = new Date()
+
+          if (now > registrationCutoffDate) {
+            console.error(
+              'Registration time over. Current time:',
+              now,
+              'Cutoff time:',
+              registrationCutoffDate,
+            )
+            throw new APIError('Registration time over', 400)
+          }
+        }
+        return args
+      },
+    ],
     afterChange: [
-      async ({ doc, req, operation }) => {
+      async ({ doc, req, operation, context }) => {
         // This hook runs after create and update operations
         if (operation === 'create') {
           const attendeeId = doc.id
@@ -327,26 +367,7 @@ export const Attendees = {
           try {
             const transaction_id = `REG-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
 
-            // Fetch product data
-            const productDataRaw = await req.payload.find({
-              collection: 'products',
-              where: {
-                productName: {
-                  equals: 'Reginest Registration',
-                },
-              },
-            })
-            const productData = productDataRaw?.docs?.[0]
-
-            if (!productData) {
-              console.error('Product "Reginest Registration" not found. Cannot initiate payment.')
-              // You might want to throw an error or handle this more gracefully
-              // e.g., update attendee status to 'payment_failed'
-              return {
-                ...doc,
-                error: 'Product "Reginest Registration" not found. Cannot initiate payment.',
-              } // Return the document as is, indicating failure to initiate payment
-            }
+            const productData = context.productDataRaw?.docs?.[0]
 
             const data = dataConfig({
               total_amount: productData.price * ((doc?.guests?.length || 0) + 1),
