@@ -15,6 +15,8 @@ export const Users = {
   },
   auth: {
     tokenExpiration: 7200,
+    maxLoginAttempts: 5, // Automatically lock a user out after X amount of failed logins
+    lockTime: 600 * 100, // 600 * 1000 Time period to allow the max login attempts
     cookies: {
       ...(process.env.NODE_ENV !== 'development' && {
         sameSite: 'None',
